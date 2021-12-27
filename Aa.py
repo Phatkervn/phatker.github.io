@@ -5,6 +5,7 @@ from telegram import Update
 from telegram.ext import Updater, CommandHandler, CallbackContext
 from telegram import ParseMode
 
+
 title_tin_the_gioi = []
 link_tin_the_gioi = []
 title_trong_nuoc = []
@@ -63,7 +64,7 @@ def get_news_trongnuoc():
     url_ndh = requests.get("https://cafef.vn/thoi-su.chn")
     soup_ndh = BeautifulSoup(url_ndh.text, 'html.parser')
     mydivs_ndh = soup_ndh.find_all("h3", {"class": ""})
-    for new in mydivs_ndh[0:3]:
+    for new in mydivs_ndh[0:1]:
         if new.a.get('title') not in add_title:
         	link_trong_nuoc.append('https://cafef.vn' + new.a.get("href"))
         	title_trong_nuoc.append(new.a.get("title"))
@@ -95,6 +96,27 @@ def get_news_chungkhoang1():
         	title_chungkhoang.append(new.a.get("title"))
         	add_title.append(new.a.get('title'))
 
+def get_news_trongnuoc2():
+    global add_title
+    header = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:95.0) Gecko/20100101 Firefox/95.0'}
+    response = requests.get("https://vietstock.vn/chung-khoan/giao-dich-noi-bo.htm", headers = header)
+    soup = BeautifulSoup(response.content, "html.parser")
+    abstract = soup.find_all("h2", class_='channel-title')
+    for i in abstract[0:1]:
+        if i.a.text not in add_title:
+        	link_trong_nuoc.append('https://vietstock.vn' + i.a.get("href"))
+        	title_trong_nuoc.append(i.a.text)
+        	add_title.append(i.a.text)
+def get_news_trongnuoc3():
+    global add_title
+    url_ndh = requests.get("https://ndh.vn/chung-khoan/co-phieu")
+    soup_ndh = BeautifulSoup(url_ndh.text, 'html.parser')
+    mydivs_ndh = soup_ndh.find_all("h3", {"class": "title-news"})
+    for new in mydivs_ndh[0:1]:
+        if new.a.get('title') not in add_title:
+        	link_trong_nuoc.append('https://ndh.vn' + new.a.get("href"))
+        	title_trong_nuoc.append(new.a.get("title"))
+        	add_title.append(new.a.get('title'))
 
 
 def get_news_chungkhoang2():
@@ -103,7 +125,7 @@ def get_news_chungkhoang2():
     response = requests.get("https://vietstock.vn/chung-khoan/giao-dich-noi-bo.htm", headers = header)
     soup = BeautifulSoup(response.content, "html.parser")
     abstract = soup.find_all("h2", class_='channel-title')
-    for i in abstract[0:5]:
+    for i in abstract[0:10]:
         if i.a.text not in add_title:
         	link_chungkhoang.append('https://vietstock.vn' + i.a.get("href"))
         	title_chungkhoang.append(i.a.text)
@@ -142,7 +164,7 @@ def get_news_chungkhoan():
     url_ndh = requests.get("https://ndh.vn/chung-khoan/")
     soup_ndh = BeautifulSoup(url_ndh.text, 'html.parser')
     mydivs_ndh = soup_ndh.find_all("h3", {"class": "title-news"})
-    for new in mydivs_ndh[0:3]:
+    for new in mydivs_ndh[0:4]:
         if new.a.get('title') not in add_title:
         	link_chungkhoang.append('https://ndh.vn' + new.a.get("href"))
         	title_chungkhoang.append(new.a.get("title"))
@@ -196,8 +218,8 @@ get_news_thegioi()
 get_news_thegioi_1()
 get_news_thegioi_2()
 get_news_trongnuoc()
-
-
+get_news_trongnuoc2()
+get_news_trongnuoc3()
 get_news_hanghoa()
 get_news_batdongsan()
 get_news_chungkhoan()
@@ -211,6 +233,6 @@ updater = Updater('5002113106:AAE4pREE_5-W8XgEy1calCUk4RZnOBu0NHc')
 
 # Lệnh
 updater.dispatcher.add_handler(CommandHandler('news', news))
-
+#updater.dispatcher.add_handler(CommandHandler('chungkhoan', newss))
 updater.start_polling()
 updater.idle()
